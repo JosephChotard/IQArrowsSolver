@@ -35,6 +35,16 @@ PIECES = {
   ],
 }
 
+COLOURS = {
+  "orange": '48:5:166:0',
+  "red": '41',
+  "yellow": '43',
+  "blue": '44',
+  "green": '42',
+  "purple": '45',
+  "": '40'
+}
+
 class Piece(object):
   def __init__(self, colour: str, piece = -1):
     self.colour = colour

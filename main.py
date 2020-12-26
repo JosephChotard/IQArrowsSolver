@@ -18,7 +18,10 @@ def explore(board, availablePieces, level=0):
     return
   for i, availablePiece in enumerate(availablePieces):
     availablePlace = getAvailablePlace(board)
-    for rotation in range(4):
+    rotations = 4
+    if availablePiece.colour == 'purple':
+      rotations = 2
+    for rotation in range(rotations):
       piece = availablePiece.copy()
       # All rotations of piece
       for _ in range(rotation):
@@ -34,5 +37,8 @@ pieces = [Piece(colour) for colour in PIECES.keys()]
 board = Board()
 explore(board, pieces)
 from pprint import pprint
-print(POSSIBLE_BOARDS[0])
+for board in POSSIBLE_BOARDS[:100]:
+  print('')
+  print(board)
+  print('')
 print(f'{len(POSSIBLE_BOARDS)} possible boards')

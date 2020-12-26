@@ -1,16 +1,16 @@
-from pieces import DIRECTIONS
+from pieces import DIRECTIONS, COLOURS
 import copy
 
 
 def parsePair(pair):
-  return f'{pair[1][0]}-{DIRECTIONS.get(pair[0])}'
+  return f'\033[{COLOURS.get(pair[1])}m{DIRECTIONS.get(pair[0])}\033[0m'
 
 class Board(object):
   def __init__(self, grid = [], placedPieces = set()):
     self.width = 6
     self.height = 3
     if grid == []:
-      self.grid = [[(0,0) for i in range(self.width)] for j in range(self.height)]
+      self.grid = [[(0,'') for i in range(self.width)] for j in range(self.height)]
     else:
       self.grid = grid
     
