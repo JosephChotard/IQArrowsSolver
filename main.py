@@ -4,7 +4,7 @@ from board import Board
 def getAvailablePlace(board):
   for x, row in enumerate(board.grid):
     for y, column in enumerate(row):
-      if column == 0:
+      if column[0] == 0:
         return [x, y]
   return -1
 
@@ -34,4 +34,5 @@ pieces = [Piece(colour) for colour in PIECES.keys()]
 board = Board()
 explore(board, pieces)
 from pprint import pprint
+print(POSSIBLE_BOARDS[0])
 print(f'{len(POSSIBLE_BOARDS)} possible boards')

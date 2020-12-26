@@ -2,12 +2,15 @@ from pieces import DIRECTIONS
 import copy
 
 
+def parsePair(pair):
+  return f'{pair[1][0]}-{DIRECTIONS.get(pair[0])}'
+
 class Board(object):
   def __init__(self, grid = [], placedPieces = set()):
     self.width = 6
     self.height = 3
     if grid == []:
-      self.grid = [[0 for i in range(self.width)] for j in range(self.height)]
+      self.grid = [[(0,0) for i in range(self.width)] for j in range(self.height)]
     else:
       self.grid = grid
     
@@ -16,7 +19,7 @@ class Board(object):
   def __str__(self):
     string = ""
     for row in self.grid:
-      string += ' '.join(map(DIRECTIONS.get, row)) + "\n"
+      string += ' '.join(map(parsePair, row)) + "\n"
     return string[:-1]
 
   def canPlace(self, piece, position):
@@ -29,7 +32,7 @@ class Board(object):
       for p in row:
         if not (len(self.grid) > r and len(self.grid[r]) > c):
           return False
-        if p > 0 and  self.grid[r][c] != 0:
+        if p > 0 and  self.grid[r][c][0] != 0:
           return False
         c += 1
       r += 1
@@ -50,10 +53,10 @@ class Board(object):
       for p in row:
         if not (len(grid) > r and len(grid[r]) > c):
           raise Exception("Piece out of range")
-        if p > 0 and grid[r][c] != 0:
+        if p > 0 and grid[r][c][0] != 0:
           raise Exception("Piece cannot be placed here")
         if p > 0:
-          grid[r][c] = p
+          grid[r][c] = (p, piece.colour)
         c += 1
       r += 1
 
