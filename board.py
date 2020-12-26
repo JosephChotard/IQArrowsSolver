@@ -6,20 +6,27 @@ def parsePair(pair):
   return f'\033[{COLOURS.get(pair[1])}m{DIRECTIONS.get(pair[0])}\033[0m'
 
 class Board(object):
-  def __init__(self, grid = [], placedPieces = set()):
+  def __init__(self, grid = [], placedPieces = set(), constraints = dict()):
     self.width = 6
     self.height = 3
     if grid == []:
       self.grid = [[(0,'') for i in range(self.width)] for j in range(self.height)]
     else:
       self.grid = grid
+
+    self.constraints = constraints
     
     self.placedPieces = placedPieces
 
   def __str__(self):
     string = ""
-    for row in self.grid:
-      string += ' '.join(map(parsePair, row)) + "\n"
+    for r, row in enumerate(self.grid):
+      for c, pair in enumerate(row):
+        if (r,c) in self.constraints and pair[0] == 0:
+          string += f' \u001b[35m{DIRECTIONS.get(self.constraints.get((r,c))[0])}\033[0m'
+        else:
+          string += f' {parsePair(pair)}'
+      string += "\n"
     return string[:-1]
 
   def canPlace(self, piece, position):
@@ -32,8 +39,14 @@ class Board(object):
       for p in row:
         if not (len(self.grid) > r and len(self.grid[r]) > c):
           return False
-        if p > 0 and  self.grid[r][c][0] != 0:
+        if p > 0 and self.grid[r][c][0] != 0:
           return False
+        pos = (r,c)
+        if pos in self.constraints:
+          if p != self.constraints[pos][0]:
+            return False
+          if self.constraints[pos][1] != '' and piece.colour != self.constraints[pos][1]:
+            return False
         c += 1
       r += 1
     return True
@@ -43,24 +56,18 @@ class Board(object):
     r = position[0]
     grid = copy.deepcopy(self.grid)
 
-
-    if piece in self.placedPieces:
-      raise Exception('Piece has already been placed')
-
+    if not self.canPlace(piece, position):
+      raise Exception('Cannot place piece')
 
     for row in piece.piece:
       c = position[1]
       for p in row:
-        if not (len(grid) > r and len(grid[r]) > c):
-          raise Exception("Piece out of range")
-        if p > 0 and grid[r][c][0] != 0:
-          raise Exception("Piece cannot be placed here")
         if p > 0:
           grid[r][c] = (p, piece.colour)
         c += 1
       r += 1
 
-    return Board(grid, self.placedPieces | set([piece.colour]))
+    return Board(grid, self.placedPieces | set([piece.colour]), self.constraints)
 
 
 

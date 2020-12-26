@@ -1,15 +1,17 @@
 from pieces import PIECES, Piece
 from board import Board
+import copy
 
 def getAvailablePlace(board):
   for x, row in enumerate(board.grid):
     for y, column in enumerate(row):
       if column[0] == 0:
-        return [x, y]
+        return (x, y)
   return -1
 
 
 POSSIBLE_BOARDS = []
+
 
 def explore(board, availablePieces, level=0):
   if len(availablePieces) == 0:
@@ -33,11 +35,42 @@ def explore(board, availablePieces, level=0):
     # if level == 0:
     #   return
 
-pieces = [Piece(colour) for colour in PIECES.keys()]
-board = Board()
+
+pieces = [Piece(colour) for colour in PIECES.keys() if colour not in ['orange', 'blue']]
+
+CONSTRAINTS = {
+  # (0,1): (2, ''),
+  # (1,0): (2, ''),
+  # (1,3): (2, ''),
+  # (2,4): (2, ''),
+}
+
+# CONSTRAINTS = {
+#   (0,0): (2, ''),
+#   (0,1): (3, ''),
+# }
+
+board = Board(
+  grid=[
+    [(1, 'blue'), (2, 'blue'), (2, 'blue'), (4, 'orange'), (3, 'orange'), (0, '')],
+     [(0, ''), (0, ''), (1, 'blue'), (2, 'orange'), (0, ''), (0, '')], 
+     [(0, ''), (0, ''), (0, ''), (0, ''), (0, ''), (0, '')]],
+  constraints=CONSTRAINTS)
+
+print(board)
+
+
+# board.grid[0][1] = (2,'')
+# board.grid[1][0] = (2,'')
+# board.grid[1][3] = (2, '')
+# board.grid[2][4] = (2, '')
+# print(board)
 explore(board, pieces)
 from pprint import pprint
-for board in POSSIBLE_BOARDS[:100]:
+for board in POSSIBLE_BOARDS:
+  for constraint in CONSTRAINTS.keys():
+    if board.grid[constraint[0]][constraint[1]][0] != CONSTRAINTS[constraint]:
+      continue
   print('')
   print(board)
   print('')
