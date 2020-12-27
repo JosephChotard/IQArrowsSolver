@@ -9,8 +9,8 @@ class Board(object):
   def __init__(self, grid = [], placedPieces = set(), constraints = dict()):
     self.width = 6
     self.height = 3
-    if grid == []:
-      self.grid = [[(0,'') for i in range(self.width)] for j in range(self.height)]
+    if len(grid) == 0:
+      self.grid = tuple(tuple((0,'') for i in range(self.width)) for j in range(self.height))
     else:
       self.grid = grid
 
@@ -54,7 +54,7 @@ class Board(object):
 
   def placePiece(self, piece, position):
     r = position[0]
-    grid = copy.deepcopy(self.grid)
+    grid = [[item for item in row] for row in self.grid]
 
     if not self.canPlace(piece, position):
       raise Exception('Cannot place piece')
@@ -67,7 +67,7 @@ class Board(object):
         c += 1
       r += 1
 
-    return Board(grid, self.placedPieces | set([piece.colour]), self.constraints)
+    return Board(tuple(tuple(pos for pos in row) for row in grid), self.placedPieces | set([piece.colour]), self.constraints)
 
 
 

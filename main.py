@@ -11,32 +11,42 @@ def getAvailablePlace(board):
 
 
 POSSIBLE_BOARDS = []
+EXPLORED_BOARDS = set()
+
+
+def getAllPossibleMoves(board, availablePieces):
+  possibleMoves = set()
+  for x, row in enumerate(board.grid):
+    for y, column in enumerate(row):
+      for piece in availablePieces:
+        rotations = 4
+        if piece.colour == 'purple':
+          rotations = 2
+        for rotation in range(rotations):
+          piece.rotate_right()
+          if board.canPlace(piece, (x,y)):
+            possibleMoves.add((piece.copy(), (x,y)))
+            # print(f'\n{piece} at pos {(x,y)}')
+            # print(board.placePiece(piece, (x,y)))
+  return possibleMoves
 
 
 def explore(board, availablePieces, level=0):
+  if board.grid in EXPLORED_BOARDS:
+    return False
+  EXPLORED_BOARDS.add(board.grid)
   if len(availablePieces) == 0:
     # print(f'Filled the Board!\n{board}')
     POSSIBLE_BOARDS.append(board)
-    return
-  for i, availablePiece in enumerate(availablePieces):
-    availablePlace = getAvailablePlace(board)
-    rotations = 4
-    if availablePiece.colour == 'purple':
-      rotations = 2
-    for rotation in range(rotations):
-      piece = availablePiece.copy()
-      # All rotations of piece
-      for _ in range(rotation):
-        piece.rotate_right()
-      if availablePlace != -1 and board.canPlace(piece, availablePlace):
-        b = board.placePiece(piece, availablePlace)
-        # print(f'[LEVEL {level}] Placed: {piece.colour} with rotation: {rotation}, {len(availablePieces)} pieces left\n{str(b)}')
-        explore(b, availablePieces[:i] + availablePieces[i+1:], level+1)
-    # if level == 0:
-    #   return
+    return True
+  for piece, position in getAllPossibleMoves(board, availablePieces):
+    b = board.placePiece(piece, position)
+    # print(f'[LEVEL {level}] Placed: {piece.colour} with rotation: {rotation}, {len(availablePieces)} pieces left\n{str(b)}')
+    # print(f'\n{piece} at pos {position}')
+    # print(board.placePiece(piece, position))
+    explore(b, tuple(p for p in availablePieces if p.colour != piece.colour), level+1)
 
-
-pieces = [Piece(colour) for colour in PIECES.keys() if colour not in ['orange', 'blue']]
+pieces = [Piece(colour) for colour in PIECES.keys() if colour not in []]
 
 CONSTRAINTS = {
   # (0,1): (2, ''),
@@ -51,20 +61,12 @@ CONSTRAINTS = {
 # }
 
 board = Board(
-  grid=[
-    [(1, 'blue'), (2, 'blue'), (2, 'blue'), (4, 'orange'), (3, 'orange'), (0, '')],
-     [(0, ''), (0, ''), (1, 'blue'), (2, 'orange'), (0, ''), (0, '')], 
-     [(0, ''), (0, ''), (0, ''), (0, ''), (0, ''), (0, '')]],
+  # grid=(((1, 'blue'), (2, 'blue'), (2, 'blue'), (4, 'orange'), (3, 'orange'), (0, '')),
+  #    ((0, ''), (0, ''), (1, 'blue'), (2, 'orange'), (0, ''), (0, '')), 
+  #    ((0, ''), (1, 'purple'), (3, 'purple'), (0, ''), (0, ''), (0, ''))),
   constraints=CONSTRAINTS)
 
 print(board)
-
-
-# board.grid[0][1] = (2,'')
-# board.grid[1][0] = (2,'')
-# board.grid[1][3] = (2, '')
-# board.grid[2][4] = (2, '')
-# print(board)
 explore(board, pieces)
 from pprint import pprint
 for board in POSSIBLE_BOARDS:
