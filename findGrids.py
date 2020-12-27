@@ -5,10 +5,11 @@ from board import Board
 pieces = set(colour for colour in PIECES.keys())
 
 CONSTRAINTS = {
-  (0,1): (2, ''),
-  (1,0): (2, ''),
-  (1,3): (2, ''),
-  (2,4): (2, ''),
+  # (0,4): (3, ''),
+  # (1,1): (3, ''),
+  # (1,3): (3, ''),
+  # (2,2): (3, ''),
+  # (2,3): (3, ''),
 }
 
 with open('grids.json') as json_file:
@@ -18,6 +19,9 @@ with open('grids.json') as json_file:
       correct = True
       for constraint in CONSTRAINTS.keys():
         if board.grid[constraint[0]][constraint[1]][0] != CONSTRAINTS[constraint][0]:
+          correct = False
+          continue
+        if CONSTRAINTS[constraint][1] != '' and board.grid[constraint[0]][constraint[1]][1] != CONSTRAINTS[constraint][1]:
           correct = False
           continue
       if correct:
