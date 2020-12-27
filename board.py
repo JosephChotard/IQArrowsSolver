@@ -71,7 +71,6 @@ class Board(object):
     return Board(tuple(tuple(pos for pos in row) for row in grid), self.placedPieces | set([piece.colour]), self.constraints)
 
 
-
 if __name__ == '__main__':
   board = Board()
   print(board)

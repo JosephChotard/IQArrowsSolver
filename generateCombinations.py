@@ -91,21 +91,23 @@ CONSTRAINTS = {
 # }
 
 board = Board(
-  grid=(((0, ''), (0, ''), (0, ''), (0, ''), (0, ''), (0, '')),
-     ((0, ''), (0, ''), (0, ''), (0, ''), (0, ''), (0, '')), 
-     ((0, ''), (0, ''), (0, ''), (0, ''), (0, ''), (0, ''))),
+  # grid=(((0, ''), (0, ''), (0, ''), (0, ''), (0, ''), (0, '')),
+  #    ((0, ''), (0, ''), (0, ''), (0, ''), (0, ''), (0, '')), 
+  #    ((0, ''), (0, ''), (0, ''), (0, ''), (0, ''), (0, ''))),
   constraints=CONSTRAINTS)
 
 # 3360 possible boards!!
 
 print(board)
 explore(board, pieces)
-from pprint import pprint
 for board in POSSIBLE_BOARDS:
-  for constraint in CONSTRAINTS.keys():
-    if board.grid[constraint[0]][constraint[1]][0] != CONSTRAINTS[constraint]:
-      continue
   print('')
   print(board)
   print('')
 print(f'{len(POSSIBLE_BOARDS)} possible boards')
+
+import json
+arr = [board.grid for board in POSSIBLE_BOARDS]
+with open('grids.json', 'w') as outfile:
+    json.dump(arr, outfile)
+
