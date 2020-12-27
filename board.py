@@ -34,21 +34,22 @@ class Board(object):
       return False
 
     r = position[0]
-    for row in piece.piece:
-      c = position[1]
-      for p in row:
-        if not (len(self.grid) > r and len(self.grid[r]) > c):
+    c = position[1]
+    for x, row in enumerate(piece.piece):
+      for y, p in enumerate(row):
+        currentX = r+x
+        currentY = c+y
+        if not (len(self.grid) > currentX and len(self.grid[currentX]) > currentY):
           return False
-        if p > 0 and self.grid[r][c][0] != 0:
+        if p > 0 and self.grid[currentX][currentY][0] != 0:
           return False
-        pos = (r,c)
-        if pos in self.constraints:
-          if p != self.constraints[pos][0]:
-            return False
-          if self.constraints[pos][1] != '' and piece.colour != self.constraints[pos][1]:
-            return False
-        c += 1
-      r += 1
+        pos = (r+x,c+y)
+        if p != 0:
+          if pos in self.constraints:
+            if p != self.constraints[pos][0]:
+              return False
+            if self.constraints[pos][1] != '' and piece.colour != self.constraints[pos][1]:
+              return False
     return True
       
 

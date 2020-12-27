@@ -9,10 +9,36 @@ def getAvailablePlace(board):
         return (x, y)
   return -1
 
+def getNeighbors(board, pos):
+  sides = (
+    (-1,0),
+    (1,0),
+    (0,1),
+    (0,-1)
+  )
+  positions = []
+  grid = board.grid
+  HEIGHT = len(grid)
+  WIDTH = len(grid[0])
+  for side in sides:
+    x = pos[0] + side[0]
+    y = pos[1] + side[1]
+    if not (x < 0 or x >= HEIGHT or y < 0 or y >= WIDTH):
+      positions.append(grid[x][y])
+  return positions
+
 
 POSSIBLE_BOARDS = []
 EXPLORED_BOARDS = set()
 
+def isPossible(board):
+  # Check if any empty single cell
+  for x, row in enumerate(board.grid):
+    for y, cell in enumerate(row):
+      if cell[0] == 0:
+        if all([neighbour[0] != 0 for neighbour in getNeighbors(board, (x,y))]):
+          return False
+  return True
 
 def getAllPossibleMoves(board, availablePieces):
   possibleMoves = set()
@@ -35,11 +61,15 @@ def explore(board, availablePieces, level=0):
   if board.grid in EXPLORED_BOARDS:
     return False
   EXPLORED_BOARDS.add(board.grid)
+  if not isPossible(board):
+    return False
+  # print(f'LEVEL {level}\n',tuple(map(lambda x:x.colour, availablePieces)),f'\n{board}')
   if len(availablePieces) == 0:
     # print(f'Filled the Board!\n{board}')
     POSSIBLE_BOARDS.append(board)
     return True
-  for piece, position in getAllPossibleMoves(board, availablePieces):
+  possibleMoves = getAllPossibleMoves(board, availablePieces)
+  for piece, position in possibleMoves:
     b = board.placePiece(piece, position)
     # print(f'[LEVEL {level}] Placed: {piece.colour} with rotation: {rotation}, {len(availablePieces)} pieces left\n{str(b)}')
     # print(f'\n{piece} at pos {position}')
@@ -61,10 +91,12 @@ CONSTRAINTS = {
 # }
 
 board = Board(
-  # grid=(((1, 'blue'), (2, 'blue'), (2, 'blue'), (4, 'orange'), (3, 'orange'), (0, '')),
-  #    ((0, ''), (0, ''), (1, 'blue'), (2, 'orange'), (0, ''), (0, '')), 
-  #    ((0, ''), (1, 'purple'), (3, 'purple'), (0, ''), (0, ''), (0, ''))),
+  grid=(((0, ''), (0, ''), (0, ''), (0, ''), (0, ''), (0, '')),
+     ((0, ''), (0, ''), (0, ''), (0, ''), (0, ''), (0, '')), 
+     ((0, ''), (0, ''), (0, ''), (0, ''), (0, ''), (0, ''))),
   constraints=CONSTRAINTS)
+
+# 3360 possible boards!!
 
 print(board)
 explore(board, pieces)
