@@ -1,5 +1,6 @@
-import { DIRECTIONS } from '@components/boardInput/Board.model'
-import BoardInput from '@components/boardInput/BoardInput'
+import Board from '@components/board/Board'
+import { DIRECTIONS } from '@components/board/boardInput/Board.model'
+import BoardInput from '@components/board/boardInput/BoardInput'
 import Head from 'next/head'
 import React from 'react'
 
@@ -35,6 +36,13 @@ export default function Home() {
         setGrid={setGrid}
       />
       <button>Search</button>
+      {grids.slice(0,20).map((grid, i) => (
+        <Board
+          key={i}
+          grid={grid}
+        />
+      ))}
+      
     </div>
   )
 }

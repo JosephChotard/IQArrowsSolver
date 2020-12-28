@@ -1,11 +1,11 @@
 import React from 'react'
 import CellInput from './cellInput/CellInput'
 import styles from './BoardInput.module.scss'
-import { DIRECTIONS } from './Board.model'
+import { COLOURS, DIRECTIONS } from './Board.model'
 
 export type BoardInputProps = {
-  grid: [DIRECTIONS, string][][],
-  setGrid: (g: [DIRECTIONS, string][][]) => void
+  grid: [DIRECTIONS, COLOURS][][],
+  setGrid: (g: [DIRECTIONS, COLOURS][][]) => void
 }
 export default function BoardInput({ grid, setGrid }: BoardInputProps) {
   
@@ -18,7 +18,7 @@ export default function BoardInput({ grid, setGrid }: BoardInputProps) {
         if (columnIndex !== column) {
           return c
         }
-        return [direction, '']
+        return [direction, COLOURS.NONE]
       })
     }))
   }
