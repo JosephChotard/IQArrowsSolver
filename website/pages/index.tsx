@@ -5,6 +5,7 @@ import Head from 'next/head'
 import React from 'react'
 import styles from './Index.module.scss'
 import Router from 'next/router'
+import applyConstraintToGrid from 'lib/applyConstraintToGrid'
 
 
 const WIDTH = 6
@@ -28,16 +29,7 @@ export default function Home() {
       const search = window.location.search.substring(1)
       const params = JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}')
 
-      setGrid(grid => grid.map((row, rowIndex) => {
-        return row.map((cell, cellIndex) => {
-          const key = `${rowIndex}c${cellIndex}`
-          const dir = parseInt(params[key])
-          if (key in params && dir in DIRECTIONS) {
-            return ([dir, ''] as any)
-          }
-          return cell
-        })
-      }))
+      setGrid(grid => applyConstraintToGrid(grid, params))
     }
   }, [])
 
