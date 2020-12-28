@@ -19,7 +19,7 @@ export default function Home() {
   )
 
   React.useEffect(() => {
-    fetch('/grids.json')
+    fetch('/IQArrowsSolver/grids.json')
       .then(data => data.json())
       .then(json => {
         setGrids(json)
@@ -75,7 +75,7 @@ export default function Home() {
       })
     })
     const query = Object.keys(queryObj).map(key => key + '=' + queryObj[key]).join('&')
-    const href = `${window.location.pathname}${query !== '' ? `?${query}` : '' }`
+    const href = `/${query !== '' ? `?${query}` : '' }`
     Router.push(href, href, {
         shallow: true,
       })
