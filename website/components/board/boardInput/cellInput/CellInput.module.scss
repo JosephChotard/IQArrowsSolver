@@ -48,6 +48,10 @@
     grid-template-rows: repeat(3, 1fr);
     pointer-events: none;
 
+    @media (max-width: 767px) {
+      font-size: 0.5em;
+    }
+
     * {
       margin: auto;
     }
@@ -84,6 +88,10 @@
   margin: 10%;
   position: relative;
   font-size: 3em;
+
+  @media (max-width: 767px) {
+    font-size: 2em;
+  }
 
   .cancelButton {
     position: absolute;

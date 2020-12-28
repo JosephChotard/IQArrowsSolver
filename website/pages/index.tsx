@@ -4,15 +4,13 @@ import BoardInput from '@components/board/boardInput/BoardInput'
 import Head from 'next/head'
 import React from 'react'
 import styles from './Index.module.scss'
-import Router, { useRouter } from 'next/router'
+import Router from 'next/router'
 
 
 const WIDTH = 6
 const HEIGHT = 3
   
 export default function Home() {
-  const router = useRouter()
-
   const [
     grid,
     setGrid
@@ -78,7 +76,7 @@ export default function Home() {
     })
     const query = Object.keys(queryObj).map(key => key + '=' + queryObj[key]).join('&')
     const href = `${window.location.pathname}${query !== '' ? `?${query}` : '' }`
-    router.push(href, href, {
+    Router.push(href, href, {
         shallow: true,
       })
     setGrid(grid)
@@ -90,7 +88,7 @@ export default function Home() {
 
 
   return (
-    <div>
+    <div className={styles.index}>
       <Head>
         <title>IQ Arrows Solver</title>
       </Head>

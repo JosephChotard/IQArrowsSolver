@@ -6,7 +6,6 @@
 
 .cell {
   position: relative;
-  overflow: hidden;
   &::before {
     content: "";
     padding-bottom: 100%;
