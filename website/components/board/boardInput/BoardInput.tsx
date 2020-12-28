@@ -24,19 +24,20 @@ export default function BoardInput({ grid, setGrid }: BoardInputProps) {
   }
 
   return (
-    <div>
-      {grid.map((row, rowIndex) => (
-        <div key={rowIndex} className={styles.row}>
-          {row.map((cell, columnIndex) => (
-            <div key={columnIndex} className={styles.cell}>
+    <div className={styles.boardInput}>
+      {grid.map((row, rowIndex) => 
+      {
+        return row.map((cell, columnIndex) => (
+          <div className={styles.cell} key={columnIndex}>
+            <div className={styles.innerCell}>
               <CellInput
                 direction={cell[0]}
                 onClick={direction => handleClick(direction, rowIndex, columnIndex)}
-              />
+                />
             </div>
-          ))}
-        </div>
-      ))}
+          </div>
+        ))}
+      )}
     </div>
   )
 }

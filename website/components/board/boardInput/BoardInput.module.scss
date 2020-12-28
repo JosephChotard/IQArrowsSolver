@@ -1,8 +1,24 @@
-.row {
-  display: flex;
-  margin: 1em 1em 1em 0;
+.boardInput {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.5em;
+}
 
-  .cell {
-    margin-left: 1em;
+.cell {
+  position: relative;
+  overflow: hidden;
+  &::before {
+    content: "";
+    padding-bottom: 100%;
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  .innerCell {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
   }
 }

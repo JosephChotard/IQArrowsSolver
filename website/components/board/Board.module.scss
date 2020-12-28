@@ -1,7 +1,10 @@
 .board {
-  margin: 1em;
 }
 
 .row {
   display: flex;
+}
+
+.cell {
+  flex: 1;
 }

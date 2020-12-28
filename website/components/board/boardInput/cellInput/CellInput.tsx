@@ -1,7 +1,9 @@
 import React from 'react'
-import { AiOutlineArrowUp, AiOutlineArrowRight, AiOutlineArrowDown, AiOutlineArrowLeft, AiOutlineQuestionCircle } from 'react-icons/ai'
-import { ImCross } from 'react-icons/im'
+import { FaArrowAltCircleUp, FaArrowAltCircleRight, FaArrowAltCircleDown, FaArrowAltCircleLeft, FaQuestionCircle } from 'react-icons/fa'
+import {ImArrowUp, ImArrowRight, ImArrowDown, ImArrowLeft} from 'react-icons/im'
+import { MdClose } from 'react-icons/md'
 import { DIRECTIONS } from '../Board.model'
+import styles from './CellInput.module.scss'
 
 export type CellInputProps = {
   onClick: (direction: DIRECTIONS) => void,
@@ -13,39 +15,52 @@ export default function CellInput({ onClick, direction }: CellInputProps) {
   let SelectedIcon: React.ReactElement = null
   switch (direction) {
     case DIRECTIONS.NONE:
-      SelectedIcon = <AiOutlineQuestionCircle />
+      SelectedIcon = <FaQuestionCircle />
       break
     case DIRECTIONS.UP:
-      SelectedIcon = <AiOutlineArrowUp />
+      SelectedIcon = <FaArrowAltCircleUp />
       break
     case DIRECTIONS.DOWN:
-      SelectedIcon = <AiOutlineArrowDown />
+      SelectedIcon = <FaArrowAltCircleDown />
       break
     case DIRECTIONS.LEFT:
-      SelectedIcon = <AiOutlineArrowLeft />
+      SelectedIcon = <FaArrowAltCircleLeft />
       break
     case DIRECTIONS.RIGHT:
-      SelectedIcon = <AiOutlineArrowRight />
+      SelectedIcon = <FaArrowAltCircleRight />
       break
   }
+
+  if (direction == DIRECTIONS.NONE) {
+    return (
+    <div className={styles.cellInput}>
+      <button onClick={() => onClick(DIRECTIONS.UP)} className={styles.up}>
+        {/* <ImArrowUp /> */}
+      </button>
+      <button onClick={() => onClick(DIRECTIONS.RIGHT)} className={styles.right}>
+        {/* <ImArrowRight /> */}
+      </button>
+      <button onClick={() => onClick(DIRECTIONS.DOWN)} className={styles.down}>
+        {/* <ImArrowDown/> */}
+      </button>
+      <button onClick={() => onClick(DIRECTIONS.LEFT)} className={styles.left}>
+        {/* <ImArrowLeft /> */}
+      </button>
+      <div className={styles.icons}>
+          <ImArrowUp className={styles.upArrow} />
+          <ImArrowRight className={styles.rightArrow} />
+          <ImArrowDown className={styles.downArrow} />
+          <ImArrowLeft className={styles.leftArrow} />
+      </div>
+    </div>
+    )
+  }
   return (
-    <div>
-      <button onClick={() => onClick(DIRECTIONS.UP)}>
-        <AiOutlineArrowUp />
-      </button>
-      <button onClick={() => onClick(DIRECTIONS.RIGHT)}>
-        <AiOutlineArrowRight />
-      </button>
-      <button onClick={() => onClick(DIRECTIONS.DOWN)}>
-        <AiOutlineArrowDown />
-      </button>
-      <button onClick={() => onClick(DIRECTIONS.LEFT)}>
-        <AiOutlineArrowLeft />
-      </button>
-      <button onClick={() => onClick(DIRECTIONS.NONE)}>
-        <ImCross />
-      </button>
+    <div className={styles.selectedCell}>
       {SelectedIcon}
+      <button className={styles.cancelButton} onClick={() => onClick(DIRECTIONS.NONE)}>
+        <MdClose />
+      </button>
     </div>
   )
 }

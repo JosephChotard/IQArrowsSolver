@@ -28,7 +28,7 @@ export default function Cell({ direction, colour }: CellProps) {
       break
   }
   return (
-    <div className={styles[colour]}>
+    <div className={`${styles[colour]} ${styles.icon}`}>
       {SelectedIcon}
     </div>
   )
