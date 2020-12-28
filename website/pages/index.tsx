@@ -19,13 +19,11 @@ export default function Home() {
   )
 
   React.useEffect(() => {
-    fetch('/grids.json')
-      .then(res => res.text())
-      .then(console.log)
-      // .then(data => data.json())
-      // .then(json => {
-      //   setGrids(json)
-      // })
+    fetch('/IQArrowsSolver/grids.json')
+      .then(data => data.json())
+      .then(json => {
+        setGrids(json)
+      })
     if (window.location.search.length > 0) {
       const search = window.location.search.substring(1)
       const params = JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}')
