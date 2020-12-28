@@ -3,14 +3,14 @@ import CellInput from './cellInput/CellInput'
 import styles from './BoardInput.module.scss'
 import { DIRECTIONS } from './Board.model'
 
-export default function BoardInput() {
-  const width = 6
-  const height = 3
-
-  const [grid, setGrid] = React.useState(new Array(height).fill(DIRECTIONS.NONE).map(() => new Array(width).fill(DIRECTIONS.NONE)))
-
+export type BoardInputProps = {
+  grid: [DIRECTIONS, string][][],
+  setGrid: (g: [DIRECTIONS, string][][]) => void
+}
+export default function BoardInput({ grid, setGrid }: BoardInputProps) {
+  
   const handleClick = (direction: DIRECTIONS, row: number, column: number) => {
-    setGrid(grid => grid.map((r, rowIndex) => {
+    setGrid(grid.map((r, rowIndex) => {
       if (rowIndex !== row) {
         return r
       }
@@ -18,7 +18,7 @@ export default function BoardInput() {
         if (columnIndex !== column) {
           return c
         }
-        return direction
+        return [direction, '']
       })
     }))
   }
@@ -34,7 +34,7 @@ export default function BoardInput() {
           {row.map((cell, columnIndex) => (
             <div key={columnIndex} className={styles.cell}>
               <CellInput
-                direction={cell}
+                direction={cell[0]}
                 onClick={direction => handleClick(direction, rowIndex, columnIndex)}
               />
             </div>
