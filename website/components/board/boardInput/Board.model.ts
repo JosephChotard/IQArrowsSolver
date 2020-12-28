@@ -15,3 +15,5 @@ export enum COLOURS {
   PURPLE = 'purple',
   NONE = ''
 }
+
+export type BOARD = [DIRECTIONS, COLOURS][][]
