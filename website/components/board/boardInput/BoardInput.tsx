@@ -23,10 +23,6 @@ export default function BoardInput({ grid, setGrid }: BoardInputProps) {
     }))
   }
 
-  React.useEffect(() => {
-    console.log(grid)
-  }, [grid])
-
   return (
     <div>
       {grid.map((row, rowIndex) => (

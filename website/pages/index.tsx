@@ -3,12 +3,13 @@ import { DIRECTIONS, BOARD } from '@components/board/boardInput/Board.model'
 import BoardInput from '@components/board/boardInput/BoardInput'
 import Head from 'next/head'
 import React from 'react'
+import styles from './Index.module.scss'
 
 const WIDTH = 6
 const HEIGHT = 3
   
 export default function Home() {
-  const [grids, setGrids] = React.useState<BOARD[]>([])
+  const [grids, setGrids] = React.useState<BOARD[]>(null)
 
   React.useEffect(() => {
     fetch('/grids.json')
@@ -32,15 +33,12 @@ export default function Home() {
         for (let cellIndex = 0; cellIndex < row.length; cellIndex++) { 
           const cell = row[cellIndex]
           if (cell[0] !== DIRECTIONS.NONE) {
-            console.log(rowIndex, cellIndex, cell[0], g[rowIndex][cellIndex][0])
             if (cell[0] !== g[rowIndex][cellIndex][0]) {
-              console.log('falsed')
               return false
             }
           }
         }
       }
-      console.log(g)
       return true
     }))
   }
@@ -55,14 +53,18 @@ export default function Home() {
         grid={grid}
         setGrid={setGrid}
       />
-      <button onClick={search}>Search</button>
-      {solutions.slice(0,20).map((grid, i) => (
+      {grids === null
+        ? <p>Loading...</p>
+        : <button onClick={search}>Search</button>
+      }
+      <div className={styles.grids}>
+      {solutions.map((grid, i) => (
         <Board
           key={i}
           grid={grid}
         />
       ))}
-      
+      </div>
     </div>
   )
 }
