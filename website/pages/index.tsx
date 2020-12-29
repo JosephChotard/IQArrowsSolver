@@ -73,7 +73,7 @@ export default function Index() {
         <title>IQ Arrows Logic Puzzle Generator</title>
       </Head>
       <h1>IQ Arrows Logic Puzzle Generator</h1>
-      <h2>Over 5000 more challenges for you</h2>
+      <h2>Over 5000 challenges for you to attempt</h2>
       <p>As always, there is only one
        possible <Link href={`/solutions/${typeof window !== 'undefined'? window.location.search : ''}`}>
           <a className={styles.solutionLink}>solution</a>
@@ -95,19 +95,9 @@ export default function Index() {
       </div>
       <div className={styles.generateNewPuzzle}>
         <button onClick={() => generateNewPuzzle()} className={styles.generateNewPuzzleButton}>
-          Generate puzzle
+          Generate new puzzle
         </button>
       </div>
-      <p className={styles.madeBy}>
-        This website was
-        made by <a href="http://github.com/JosephChotard/" target="_blank">Joseph Chotard</a>
-      </p>
-      <p className={styles.disclaimer}>
-        I am not affiliated with SmartGames in any way.
-        This website purely for entetertainment purposes.
-        All code for this website is available for free, under the MIT license
-        <a href="https://github.com/JosephChotard/IQArrowsSolver"> here</a>
-      </p>
     </div>
   )
 }

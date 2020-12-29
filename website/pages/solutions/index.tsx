@@ -8,6 +8,7 @@ import Router from 'next/router'
 import applyConstraintToGrid from 'lib/applyConstraintToGrid'
 import constraintToQuery from 'lib/constraintToQuery'
 import windowLocationToConstraint from 'lib/windowLocationToConstraint'
+import Link from 'next/link'
 
 
 const WIDTH = 6
@@ -82,8 +83,15 @@ export default function Solutions() {
   return (
     <div className={styles.index}>
       <Head>
-        <title>IQ Arrows Solver</title>
+        <title>IQ Arrows Logic Puzzle Solver</title>
       </Head>
+      <h1>IQ Arrows Logic Puzzle Solver</h1>
+      <p>Solve any IQ Arrows puzzle instantly for free</p>
+      <Link href="/">
+        <a className={styles.generateNewPuzzle}>
+          Generate more puzzles
+        </a>
+      </Link>
       <BoardInput
         grid={grid}
         setGrid={onGridChange}
@@ -92,14 +100,14 @@ export default function Solutions() {
         ? <p>Loading...</p>
         : (
           <div className={styles.grids}>
-            {solutions.slice(0,50).map((grid, i) => (
+            {solutions.slice(0,49).map((grid, i) => (
               <Board
                 key={i}
                 grid={grid}
               />
             ))}
-              {solutions.length > 50 && (
-                <p className={styles.firstResults}>Only displaying first 50 results</p>
+              {solutions.length > 49 && (
+                <p className={styles.firstResults}>Only displaying first 49 of {solutions.length} results</p>
             )}
           </div>
         )
