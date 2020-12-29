@@ -6,6 +6,8 @@ import React from 'react'
 import styles from './Index.module.scss'
 import Router from 'next/router'
 import applyConstraintToGrid from 'lib/applyConstraintToGrid'
+import constraintToQuery from 'lib/constraintToQuery'
+import windowLocationToConstraint from 'lib/windowLocationToConstraint'
 
 
 const WIDTH = 6
@@ -26,8 +28,7 @@ export default function Home() {
         setGrids(json)
       })
     if (window.location.search.length > 0) {
-      const search = window.location.search.substring(1)
-      const params = JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}')
+      const params = windowLocationToConstraint()
 
       setGrid(grid => applyConstraintToGrid(grid, params))
     }
@@ -66,8 +67,7 @@ export default function Home() {
         }
       })
     })
-    const query = Object.keys(queryObj).map(key => key + '=' + queryObj[key]).join('&')
-    const href = `/${query !== '' ? `?${query}` : '' }`
+    const href = constraintToQuery(queryObj)
     Router.replace(href, href, {
         shallow: true,
       })

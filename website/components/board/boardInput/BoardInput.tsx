@@ -24,7 +24,7 @@ export default function BoardInput({ grid, setGrid }: BoardInputProps) {
   }
 
   return (
-    <div className={styles.boardInput}>
+    <div className={styles.board}>
       {grid.map((row, rowIndex) => 
       {
         return row.map((cell, columnIndex) => (

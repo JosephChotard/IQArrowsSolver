@@ -29,7 +29,7 @@ export default function Cell({ direction, colour }: CellProps) {
   }
 
   return (
-    <div className={`${styles[colour ? colour : 'none']} ${styles.icon}`}>
+    <div className={`${styles[colour ? colour : 'none']} ${styles.icon} ${direction === DIRECTIONS.NONE ? styles.noDirection : ''}`}>
       {SelectedIcon}
     </div>
   )
