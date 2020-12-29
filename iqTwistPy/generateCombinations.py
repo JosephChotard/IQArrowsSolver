@@ -4,7 +4,9 @@ from board import Board
 import copy
 import numpy
 import json
-from ctypes import c_char_p
+import multiprocessing
+from multiprocessing import Process, Array, Manager
+import time
 
 def getNeighbors(board, pos):
   sides = (
@@ -54,10 +56,11 @@ def explore(board, availablePieces, POSSIBLE_BOARDS, EXPLORED_BOARDS, level=0):
   EXPLORED_BOARDS[str(board.grid)] = 1
   # print(f'LEVEL {level}\n',tuple(map(lambda x:x.colour, availablePieces)),f'\n{board}')
   if len(availablePieces) == 0:
-    POSSIBLE_BOARDS.append(str(board.grid))
+    POSSIBLE_BOARDS.append(board.grid.tolist())
     return True
-  if len(POSSIBLE_BOARDS) > 50:
-    save(EXPLORED_BOARDS, POSSIBLE_BOARDS)
+  if len(POSSIBLE_BOARDS) > 10:
+    if multiprocessing.current_process().name == '0':
+      save(EXPLORED_BOARDS, POSSIBLE_BOARDS)
   possibleMoves = getAllPossibleMoves(board, availablePieces)
   if not possibleMoves:
     return False
@@ -84,7 +87,7 @@ CONSTRAINTS = {
 
 
 def save(EXPLORED_BOARDS, POSSIBLE_BOARDS):
-  print(f'Saving {len(POSSIBLE_BOARDS)} boards')
+  # print(f'Saving {len(POSSIBLE_BOARDS)} boards')
   with open('grids.json', 'r+') as json_file:
     try:
       data = json.load(json_file)
@@ -93,9 +96,12 @@ def save(EXPLORED_BOARDS, POSSIBLE_BOARDS):
     # print(data)
   # print(POSSIBLE_BOARDS)
   with open('grids.json', 'w') as json_file:
-    json.dump(data + [board for board in POSSIBLE_BOARDS], json_file)
-    json_file.flush()
-  POSSIBLE_BOARDS = []
+    print(f'Saving {len(POSSIBLE_BOARDS)} boards')
+    new = data + [board for board in POSSIBLE_BOARDS]
+    print(len(new))
+    json.dump(new, json_file)
+  POSSIBLE_BOARDS *= 0
+  time.sleep(1)
 
 
 # 3360 possible boards!!
@@ -108,8 +114,7 @@ if __name__ == '__main__':
     constraints=CONSTRAINTS
   )
   print(board)
-  from multiprocessing import Process, Array, Manager
-  import time
+
 
   with Manager() as manager:
     # POSSIBLE_BOARDS = Array(c_char_p, 10000)
@@ -118,22 +123,23 @@ if __name__ == '__main__':
 
     possibleMoves = getAllPossibleMoves(board, pieces)
     jobs = []
-    for piece, position in tuple(possibleMoves):
+    max = 8
+    for index, (piece, position) in enumerate(tuple(possibleMoves)):
       b = board.placePiece(piece, position)
       print(f'Started process\n{b}')
-      p = Process(target=explore, args=(b, tuple(p for p in pieces if p.colour != piece.colour), POSSIBLE_BOARDS, EXPLORED_BOARDS, 1))
+      p = Process(name=str(index%max),target=explore, args=(b, tuple(p for p in pieces if p.colour != piece.colour), POSSIBLE_BOARDS, EXPLORED_BOARDS, 1))
       # explore(b, tuple(p for p in pieces if p.colour != piece.colour), 1)
       jobs.append(p)
       p.start()
-      if len(jobs) >= 8:
+      if len(jobs) >= max:
         for job in jobs:
           job.join()
         jobs = []
         # for board in POSSIBLE_BOARDS:
         #   print(board)
         #   print('')
-        save(EXPLORED_BOARDS, POSSIBLE_BOARDS)
         print(f'{len(POSSIBLE_BOARDS)} possible boards (not done)')
+        save(EXPLORED_BOARDS, POSSIBLE_BOARDS)
         
 
     for job in jobs:
