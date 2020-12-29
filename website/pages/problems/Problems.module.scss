@@ -20,6 +20,12 @@
   }
 }
 
+.solutionLink {
+  text-decoration: underline;
+  margin-left: 0.3em;
+  color: var(--dark);
+}
+
 $background: #f6f7f8;
 $grey-nuance-lighter: #eeeeee;
 $grey-nuance-darker: #dddddd;
