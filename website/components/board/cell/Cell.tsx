@@ -27,8 +27,9 @@ export default function Cell({ direction, colour }: CellProps) {
       SelectedIcon = <AiOutlineArrowRight />
       break
   }
+
   return (
-    <div className={`${styles[colour]} ${styles.icon}`}>
+    <div className={`${styles[colour ? colour : 'none']} ${styles.icon} ${direction === DIRECTIONS.NONE ? styles.noDirection : ''}`}>
       {SelectedIcon}
     </div>
   )

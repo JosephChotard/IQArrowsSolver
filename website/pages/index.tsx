@@ -5,6 +5,9 @@ import Head from 'next/head'
 import React from 'react'
 import styles from './Index.module.scss'
 import Router from 'next/router'
+import applyConstraintToGrid from 'lib/applyConstraintToGrid'
+import constraintToQuery from 'lib/constraintToQuery'
+import windowLocationToConstraint from 'lib/windowLocationToConstraint'
 
 
 const WIDTH = 6
@@ -19,25 +22,15 @@ export default function Home() {
   )
 
   React.useEffect(() => {
-    fetch('/IQArrowsSolver/grids.json')
+    fetch(`${process.env.basePath ? process.env.basePath : ''}/grids.json`)
       .then(data => data.json())
       .then(json => {
         setGrids(json)
       })
     if (window.location.search.length > 0) {
-      const search = window.location.search.substring(1)
-      const params = JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}')
+      const params = windowLocationToConstraint()
 
-      setGrid(grid => grid.map((row, rowIndex) => {
-        return row.map((cell, cellIndex) => {
-          const key = `${rowIndex}c${cellIndex}`
-          const dir = parseInt(params[key])
-          if (key in params && dir in DIRECTIONS) {
-            return ([dir, ''] as any)
-          }
-          return cell
-        })
-      }))
+      setGrid(grid => applyConstraintToGrid(grid, params))
     }
   }, [])
 
@@ -74,9 +67,8 @@ export default function Home() {
         }
       })
     })
-    const query = Object.keys(queryObj).map(key => key + '=' + queryObj[key]).join('&')
-    const href = `/${query !== '' ? `?${query}` : '' }`
-    Router.push(href, href, {
+    const href = constraintToQuery(queryObj)
+    Router.replace(href, href, {
         shallow: true,
       })
     setGrid(grid)
