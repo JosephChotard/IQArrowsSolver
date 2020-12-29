@@ -1,4 +1,4 @@
 module.exports = {
-  basePath: process.env.basePath ? process.env.basePath : '',
-  assetPrefix: process.env.basePath ? process.env.basePath + '/' : ''
+  basePath: process.env.NEXT_PUBLIC_basePath ? process.env.NEXT_PUBLIC_basePath : '',
+  assetPrefix: process.env.NEXT_PUBLIC_basePath ? process.env.NEXT_PUBLIC_basePath + '/' : ''
 }

@@ -18,7 +18,7 @@ export default function Problems() {
     setGrid(null)
     const g = new Array(HEIGHT).fill(DIRECTIONS.NONE).map(() => new Array(WIDTH).fill([DIRECTIONS.NONE, '']))
     const givenCells = Math.floor(Math.random() * (5 - 3 + 1)) + 3;
-    fetch(`${process.env.basePath ? process.env.basePath : ''}/constraints/constraints-${givenCells}.txt`)
+    fetch(`${process.env.NEXT_PUBLIC_basePath ? process.env.NEXT_PUBLIC_basePath : ''}/constraints/constraints-${givenCells}.txt`)
       .then(data => data.text())
       .then(constraintsText => {
         const constraints = constraintsText.split(/\r\n|\r|\n/)

@@ -22,7 +22,7 @@ export default function Home() {
   )
 
   React.useEffect(() => {
-    fetch(`${process.env.basePath ? process.env.basePath : ''}/grids.json`)
+    fetch(`${process.env.NEXT_PUBLIC_basePath ? process.env.NEXT_PUBLIC_basePath : ''}/grids.json`)
       .then(data => data.json())
       .then(json => {
         setGrids(json)
