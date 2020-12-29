@@ -53,6 +53,9 @@ export default function Problems() {
   }
 
   React.useEffect(() => {
+    if (typeof window === 'undefined') {
+      return
+    }
     if (window.location.search.length !== 0) {
       const g = new Array(HEIGHT).fill(DIRECTIONS.NONE).map(() => new Array(WIDTH).fill([DIRECTIONS.NONE, '']))
       const params = windowLocationToConstraint()
@@ -67,7 +70,7 @@ export default function Problems() {
     <div className={styles.problems}>
       <h1>Here is a brand new puzzle for you to solve</h1>
       <p>As always, there is only one possible solution. You can find it 
-       <Link href={`/${window.location.search}`}>
+       <Link href={`/${typeof window !== 'undefined'? window.location.search : ''}`}>
           <a className={styles.solutionLink}>here</a>
         </Link>
       </p>
