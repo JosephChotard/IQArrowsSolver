@@ -1,109 +1,113 @@
-import Board from '@components/board/Board'
-import { DIRECTIONS, BOARD } from '@components/board/boardInput/Board.model'
-import BoardInput from '@components/board/boardInput/BoardInput'
-import Head from 'next/head'
 import React from 'react'
-import styles from './Index.module.scss'
-import Router from 'next/router'
+import { BOARD, DIRECTIONS } from '@components/board/boardInput/Board.model'
 import applyConstraintToGrid from 'lib/applyConstraintToGrid'
+import Board from '@components/board/Board'
+import Router from 'next/router'
 import constraintToQuery from 'lib/constraintToQuery'
 import windowLocationToConstraint from 'lib/windowLocationToConstraint'
-
+import styles from './Index.module.scss'
+import Link from 'next/link'
+import Head from 'next/head'
 
 const WIDTH = 6
 const HEIGHT = 3
-  
-export default function Home() {
-  const [
-    grid,
-    setGrid
-  ] = React.useState<BOARD>(
-    new Array(HEIGHT).fill(DIRECTIONS.NONE).map(() => new Array(WIDTH).fill([DIRECTIONS.NONE, '']))
-  )
+
+export default function Index() {
+  const [grid, setGrid] = React.useState<BOARD>(null)
+
+  const generateNewPuzzle = (replace=false) => {
+    setGrid(null)
+    const g = new Array(HEIGHT).fill(DIRECTIONS.NONE).map(() => new Array(WIDTH).fill([DIRECTIONS.NONE, '']))
+    const givenCells = Math.floor(Math.random() * (5 - 3 + 1)) + 3;
+    fetch(`${process.env.NEXT_PUBLIC_basePath ? process.env.NEXT_PUBLIC_basePath : ''}/constraints/constraints-${givenCells}.txt`)
+      .then(data => data.text())
+      .then(constraintsText => {
+        const constraints = constraintsText.split(/\r\n|\r|\n/)
+        const selectedConstraintIndex = Math.floor(Math.random() * (constraints.length - 1 + 1))
+        const selectedConstraint = constraints[selectedConstraintIndex]
+        const parsedConstraintArray = selectedConstraint
+          .substring(1, selectedConstraint.length - 2)
+          .split('), ')
+          .map(kvPair => kvPair
+            .substring(1)
+            .split('): (')
+            .map(pair => pair.split(', '))
+          )
+        let parsedConstraint = {}
+        parsedConstraintArray.forEach(constraint => {
+          parsedConstraint[`${constraint[0][0]}c${constraint[0][1]}`] = constraint[1][0]
+        })
+        setGrid(applyConstraintToGrid(g, parsedConstraint))
+
+        // Set the url
+        const href = `${constraintToQuery(parsedConstraint)}`
+        if (replace) {
+          Router.replace(href, href, {
+            shallow: true,
+          })
+        } else {
+          Router.push(href, href, {
+            shallow: true,
+          })
+        }
+      })
+  }
 
   React.useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_basePath ? process.env.NEXT_PUBLIC_basePath : ''}/grids.json`)
-      .then(data => data.json())
-      .then(json => {
-        setGrids(json)
-      })
-    if (window.location.search.length > 0) {
-      const params = windowLocationToConstraint()
-
-      setGrid(grid => applyConstraintToGrid(grid, params))
-    }
-  }, [])
-
-  const [grids, setGrids] = React.useState<BOARD[]>(null)
-  
-  const [solutions, setSolutions] = React.useState([])
-
-  const search = () => {
-    if (!grids) {
+    if (typeof window === 'undefined') {
       return
     }
-    setSolutions(grids.filter(g => {
-      for (let rowIndex = 0; rowIndex < grid.length; rowIndex++) { 
-        const row = grid[rowIndex]
-        for (let cellIndex = 0; cellIndex < row.length; cellIndex++) { 
-          const cell = row[cellIndex]
-          if (cell[0] !== DIRECTIONS.NONE) {
-            if (cell[0] !== g[rowIndex][cellIndex][0]) {
-              return false
-            }
-          }
-        }
-      }
-      return true
-    }))
-  }
+    if (window.location.search.length !== 0) {
+      const g = new Array(HEIGHT).fill(DIRECTIONS.NONE).map(() => new Array(WIDTH).fill([DIRECTIONS.NONE, '']))
+      const params = windowLocationToConstraint()
 
-  const onGridChange = (grid: BOARD) => {
-    let queryObj: Record<string, number> = {}
-    grid.forEach((row, rowIndex) => {
-      row.forEach((cell, cellIndex) => {
-        if (cell[0] !== DIRECTIONS.NONE) {
-          queryObj[`${rowIndex}c${cellIndex}`] = cell[0]
-        }
-      })
-    })
-    const href = constraintToQuery(queryObj)
-    Router.replace(href, href, {
-        shallow: true,
-      })
-    setGrid(grid)
-  }
-
-  React.useEffect(() => {
-    search()
-  }, [grid, grids])
-
+      setGrid(applyConstraintToGrid(g, params))
+      return
+    }
+    generateNewPuzzle(true)
+  }, [])
 
   return (
-    <div className={styles.index}>
+    <div className={styles.problems}>
       <Head>
-        <title>IQ Arrows Solver</title>
+        <title>IQ Arrows Logic Puzzle Generator</title>
       </Head>
-      <BoardInput
-        grid={grid}
-        setGrid={onGridChange}
-      />
-      {grids === null
-        ? <p>Loading...</p>
-        : (
-          <div className={styles.grids}>
-            {solutions.slice(0,50).map((grid, i) => (
-              <Board
-                key={i}
-                grid={grid}
-              />
+      <h1>IQ Arrows Logic Puzzle Generator</h1>
+      <h2>Over 5000 more challenges for you</h2>
+      <p>As always, there is only one
+       possible <Link href={`/solutions/${typeof window !== 'undefined'? window.location.search : ''}`}>
+          <a className={styles.solutionLink}>solution</a>
+        </Link>.
+      </p>
+      <div>
+        {grid === null
+          ? <div className={`${styles.loading} ${styles.board}`}>
+            {[...new Array(WIDTH * HEIGHT)].map((_, i) => (
+              <div key={i} className={styles.cell}></div>
             ))}
-              {solutions.length > 50 && (
-                <p className={styles.firstResults}>Only displaying first 50 results</p>
-            )}
           </div>
-        )
-      }
+          : <div>
+            <Board
+              grid={grid}
+            />
+          </div>
+        }
+      </div>
+      <div className={styles.generateNewPuzzle}>
+        <button onClick={() => generateNewPuzzle()} className={styles.generateNewPuzzleButton}>
+          Generate puzzle
+        </button>
+      </div>
+      <p className={styles.madeBy}>
+        This website was
+        made by <a href="http://github.com/JosephChotard/" target="_blank">Joseph Chotard</a>
+      </p>
+      <p className={styles.disclaimer}>
+        I am not affiliated with SmartGames in any way.
+        This website purely for entetertainment purposes.
+        All code for this website is available for free, under the MIT license
+        <a href="https://github.com/JosephChotard/IQArrowsSolver"> here</a>
+      </p>
     </div>
   )
 }

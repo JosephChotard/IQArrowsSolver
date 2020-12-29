@@ -1,25 +1,69 @@
-.index {
-  margin: 1em 0.5em;
+@import "../components/board/Board.scss";
+.problems {
+  margin: 1em;
 }
 
-.grids {
-  margin: 1em 0;
-  display: grid;
-  gap: 1em;
-  grid-template-columns: repeat(3, 1fr);
+.generateNewPuzzle {
+  width: 100%;
+  &Button {
+    margin: 1em auto;
+    font-size: 2em;
+    text-align: center;
+    display: block;
+    border-radius: 100px;
+    border: none;
+    background-color: var(--orange);
+    color: white;
+    padding: 5px 0.5em;
+    box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
 
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  @media (min-width: 1024px) {
-    grid-template-columns: repeat(5, 1fr);
+    &:hover {
+      filter: brightness(0.95);
+    }
   }
 }
 
-.firstResults {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0;
+.solutionLink {
+  text-decoration: underline;
+  color: var(--dark);
+}
+
+$background: #f6f7f8;
+$grey-nuance-lighter: #eeeeee;
+$grey-nuance-darker: #dddddd;
+$fade-grey: #e8e8e8;
+
+.loading {
+  .cell {
+    border: 1px solid white;
+    animation-duration: 1.5s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: placeload;
+    animation-timing-function: linear;
+    background: $background;
+    background: $grey-nuance-lighter;
+    background: linear-gradient(to right, $grey-nuance-lighter 8%, $grey-nuance-darker 18%, $grey-nuance-lighter 33%);
+    background-size: 1200px 104px;
+    position: relative;
+
+    @keyframes placeload {
+      0% {
+        background-position: -468px 0;
+      }
+      100% {
+        background-position: 468px 0;
+      }
+    }
+  }
+}
+
+.madeBy {
+  text-align: center;
+}
+
+.disclaimer {
+  font-style: italic;
+  text-align: center;
 }
